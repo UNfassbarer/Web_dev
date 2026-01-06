@@ -197,6 +197,12 @@ const settingsMenu = document.getElementById("Menu_Settings");
 
 function ToggleHiddenSettings() {
   settingsMenu.classList.toggle("new_hiddenContent");
+  // document.addEventListener("click", (e) => {
+  //   console.log("click")
+  //   settingsMenu.querySelectorAll('[data-group="GeneratedSettingsElement"]').forEach((el) => {
+  //     el.classList.add("hiddenContent");
+  //   });
+  // });
 }
 
 // Scroll bar for settings menu
@@ -212,9 +218,12 @@ settingsMenu.addEventListener("wheel", (e) => {
 // Game stats toggle
 const GameInfoBox = document.getElementById("gameInfo");
 
-const ToggleGameStats = (e) => {
-  const Button = document.getElementById(e.id);
+const ToggleGameStats = () => {
+  const Button = document.getElementById("Toggle_GameStats");
+
   GameInfoBox.classList.toggle("hiddenContent");
+  GameInfoBox.classList.toggle("GameInfoFade");
+  
   !Button.classList.contains("ToggleActiveColor")
     ? Button.innerText = "Game stats on"
     : Button.innerText = "Game stats off";
@@ -223,10 +232,14 @@ const ToggleGameStats = (e) => {
 
 // Game key assignment toggle (KA)
 const KA_Button = document.getElementById("Settings_KeyAssignment");
+
+// When clicked, show/hide key assignment options
 const ToggleKeys = () => {
-  KA_Button.querySelectorAll(".KA_Category").forEach((el) =>
-    el.classList.toggle("hiddenContent")
-  );
+  KA_Button.classList.contains("Settings_Category") ?
+    document.addEventListener("click", GlobalClickControll) :
+    document.removeEventListener("click", GlobalClickControll);
+
+  KA_Button.querySelectorAll(".KA_Category").forEach((el) => { el.classList.toggle("hiddenContent") });
   KA_Button.classList.toggle("Toggle_KA");
   //adjusted height & padding
   settingsMenu.classList.toggle("ToggleMenuSettings"); //for settings menu
@@ -242,7 +255,8 @@ const AssignmentKeys = {
 };
 
 function GlobalClickControll() {
-  document.getElementById("Settings_KeyAssignment").querySelectorAll("button.KA_Category").forEach(button => {
+
+  KA_Button.querySelectorAll("button.KA_Category").forEach(button => {
     if (button.classList.contains("ToggleActiveColor")) button.classList.remove("ToggleActiveColor");
     button.querySelectorAll(".KA_Button_Key").forEach(element => {
       if (element.classList.contains("HilightetElement")) element.classList.remove("HilightetElement");
@@ -250,21 +264,23 @@ function GlobalClickControll() {
     if (button._handleKey) document.removeEventListener("keyup", button._handleKey);
   });
 }
-document.addEventListener("click", GlobalClickControll);
 
 // Generate buttons for all actions access- & changable with a key's
 for (const [action, keys] of Object.entries(AssignmentKeys)) {
   const NewButton = document.createElement("button");
+  NewButton.dataset.group = "GeneratedSettingsElement";
   NewButton.className = "KA_Category hiddenContent centerContent";
 
   // Create action catagory
   const Action_Div = document.createElement("div");
+  Action_Div.dataset.group = "GeneratedSettingsElement";
   Action_Div.innerText = action;
   NewButton.appendChild(Action_Div)
 
   // Create keys for category
   for (let i = 0; i < keys.length; i++) {
     const keyDiv = document.createElement("div");
+    keyDiv.dataset.group = "GeneratedSettingsElement";
     keyDiv.innerText = keys[i];
     keyDiv.className = "KA_Button_Key"
     NewButton.dataset.action = action;

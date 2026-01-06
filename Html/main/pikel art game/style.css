@@ -1,5 +1,6 @@
 body {
   transition: all 1s ease-in-out;
+  overflow: hidden;
 }
 
 /* Global Classes */
@@ -54,10 +55,7 @@ body {
   width: 90px;
   overflow: hidden;
   transition: all 0.5s ease-in-out;
-  background: linear-gradient(135deg,
-      rgb(0, 0, 0),
-      magenta,
-      rgb(191, 0, 255));
+  background: linear-gradient(135deg, rgb(0, 0, 0), magenta, rgb(191, 0, 255));
   -webkit-user-select: none;
   user-select: none;
 }
@@ -79,12 +77,8 @@ body {
       hsl(179, 85%, 66%));
   background-size: 300% 300%;
   animation: moveGradient 3s alternate infinite;
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   z-index: 1;
@@ -388,20 +382,25 @@ body {
 #gameInfo {
   position: absolute;
   bottom: 25px;
-  right: 25px;
   width: 150px;
   height: 140px;
   outline: #00c8ff 2px solid;
   font-size: 2vw;
   text-shadow: 0 0 5px rgb(0, 0, 0);
   color: white;
-  transition: width 1s ease-in-out;
+  transition: all 1s ease-in-out;
   font-size: clamp(1rem, 4vmin, 3rem);
+  transform: translateX(275px);
 }
 
 #gameInfo div {
   margin: 10px;
 }
+
+#gameInfo.GameInfoFade {
+  transform: translateX(500px);
+}
+
 
 /* Future plans: 
   Cool sun in space ;)
