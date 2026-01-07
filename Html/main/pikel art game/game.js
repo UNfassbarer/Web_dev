@@ -72,7 +72,7 @@ function SetTimingInterval(previousTime) {
 function newGame() {
     if (GameOver) {
         GameOver = false;
-        document.getElementById("gameOver").classList.add("hiddenContent");
+        GameOverDiv.classList.add("hiddenContent");
         // document.getElementById("gameInfo").classList.remove("hiddenContent");
 
         SetTimingInterval(0);
@@ -599,12 +599,15 @@ function checkPlayerCollision(object, o, i) {
         resetGame();
 }
 
+const GameOverDiv = document.getElementById("gameOver");
+
 function resetGame() {
     DeathCounter++;
     updateGameStats("#deaths", DeathCounter);
     GameOver = true;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    document.getElementById("gameOver").classList.toggle("hiddenContent");
+    GameOverDiv.classList.toggle("hiddenContent");
+    GameOverDiv.classList.toggle("ToggleAnimationState");
 
     // Return all objects to their pools
     obstacles.forEach((o) => obstaclePool.release(o));

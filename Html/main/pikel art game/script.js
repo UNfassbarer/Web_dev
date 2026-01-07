@@ -141,9 +141,8 @@ function OpenMenuAnimation(action, border, color1, color2) {
 
 // Toggle hidden menu content
 const ToggleHiddenMenu = () => {
-  Menu.querySelectorAll(":scope > div").forEach((div) =>
-    div.classList.toggle("hiddenContent")
-  );
+  Menu.querySelectorAll(":scope > div").forEach((div) => div.classList.toggle("hiddenContent"));
+  document.querySelector(".Rotating_background").classList.toggle("ToggleAnimationState");
 };
 
 // Open and close menu, under observation of userdevice
@@ -221,9 +220,9 @@ const GameInfoBox = document.getElementById("gameInfo");
 const ToggleGameStats = () => {
   const Button = document.getElementById("Toggle_GameStats");
 
-  GameInfoBox.classList.toggle("hiddenContent");
+  // GameInfoBox.classList.toggle("hiddenContent");
   GameInfoBox.classList.toggle("GameInfoFade");
-  
+
   !Button.classList.contains("ToggleActiveColor")
     ? Button.innerText = "Game stats on"
     : Button.innerText = "Game stats off";

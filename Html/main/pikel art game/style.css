@@ -361,7 +361,7 @@ body {
 }
 
 /* Game Over display */
-#gameOver {
+.GameOverBoard{
   position: absolute;
   font-size: 6vw;
   font-weight: 900;
@@ -376,6 +376,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(12.5deg);
+
 }
 
 /* Game Info display */

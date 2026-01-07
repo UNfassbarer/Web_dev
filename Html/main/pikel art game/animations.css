@@ -166,3 +166,7 @@
     background-position: 0% 50%;
   }
 }
+
+.ToggleAnimationState {
+  animation-play-state: paused;
+}
