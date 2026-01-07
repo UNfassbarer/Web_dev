@@ -216,11 +216,9 @@ body {
   width: 125px;
 }
 
-/* Game Settings called with settings button */
-
-/* Gray or white background depending on selected button */
+/* Universal colors for button settings*/
 .ToggleActiveColor {
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .HilightetElement {
@@ -264,7 +262,7 @@ body {
 .Settings_Category {
   cursor: pointer;
   position: relative;
-  flex: 0 0 160px;
+  flex: 0 0 170px;
   height: 40px;
   padding: 10px;
   border-radius: 4px;
@@ -319,11 +317,7 @@ body {
   gap: 5px;
 }
 
-.KA_Category.ToggleActiveColor {
-  background-color: rgba(255, 255, 255, 0.7);
-}
-
-.KA_Button_Key {}
+/* .KA_Button_Key {} */
 
 .Menu_Loading_Animation {
   position: absolute;
@@ -361,7 +355,7 @@ body {
 }
 
 /* Game Over display */
-.GameOverBoard{
+.GameOverBoard {
   position: absolute;
   font-size: 6vw;
   font-weight: 900;

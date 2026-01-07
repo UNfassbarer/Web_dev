@@ -607,7 +607,7 @@ function resetGame() {
     GameOver = true;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     GameOverDiv.classList.toggle("hiddenContent");
-    GameOverDiv.classList.toggle("ToggleAnimationState");
+    GameOverDiv.classList.toggle("gameInfo");
 
     // Return all objects to their pools
     obstacles.forEach((o) => obstaclePool.release(o));

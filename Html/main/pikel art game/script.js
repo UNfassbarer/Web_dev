@@ -214,20 +214,34 @@ settingsMenu.addEventListener("wheel", (e) => {
     : settingsMenu.scrollLeft -= delta;
 });
 
-// Game stats toggle
+
 const GameInfoBox = document.getElementById("gameInfo");
 
-const ToggleGameStats = () => {
-  const Button = document.getElementById("Toggle_GameStats");
-
-  // GameInfoBox.classList.toggle("hiddenContent");
+const ToggleGameStats = (element) => {
+  // Actually switch
+  GameInfoBox.classList.toggle("hiddenContent");
   GameInfoBox.classList.toggle("GameInfoFade");
-
-  !Button.classList.contains("ToggleActiveColor")
-    ? Button.innerText = "Game stats on"
-    : Button.innerText = "Game stats off";
-  Button.classList.toggle("ToggleActiveColor");
+  ToggleInnerSettings(element.id);
 };
+
+
+const ToggleGameSounds = (element) => {
+  // Actually switch
+  // ---
+  // ---
+  ToggleInnerSettings(element.id);
+};
+
+
+
+function ToggleInnerSettings(id) {
+  const Button = document.getElementById(id);
+  const Bool = Button.querySelector("span");
+  !Button.classList.contains("ToggleActiveColor")
+    ? Bool.innerText = "on"
+    : Bool.innerText = "off";
+  Button.classList.toggle("ToggleActiveColor");
+}
 
 // Game key assignment toggle (KA)
 const KA_Button = document.getElementById("Settings_KeyAssignment");

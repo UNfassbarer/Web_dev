@@ -11,6 +11,11 @@
 </head>
 
 <body>
+
+<div id="mute_Symbol">
+    <canvas class="First_Ring"></canvas>
+</div>
+
     <div id="Menu_Container" class="centerContent centeredObject">
 
         <div id="caption">
@@ -40,7 +45,12 @@
 
             <div id="Menu_Settings" class="Menu_Settings new_hiddenContent centerContent">
 
-                <button type="button" class="Settings_Category " onclick="ToggleGameStats(this)">Game stats off</button>
+                <button id="Toggle_GameStats" type="button" class="Settings_Category" onclick="ToggleGameStats(this)">
+                    Game stats <span>off</span>
+                </button>
+                <button id="Toggle_GameSounds" type="button" class="Settings_Category" onclick="ToggleGameSounds(this)">
+                    Game sounds <span>off</span>
+                </button>
 
                 <button id="Settings_KeyAssignment" type="button" class="Settings_Category " onclick="ToggleKeys()">Key
                     assignment</button>
@@ -56,9 +66,9 @@
     <h1 id="gameOver" class="GameOverBoard hiddenContent ToggleAnimationState">GameOver</h1>
 
     <div id="gameInfo" class="GameInfoFade hiddenContent">
-        <div>Deaths: <label id="deaths"></label></div>
-        <div>Game: <label id="gamesPlayed"></label></div>
-        <div>Time: <label id="survivedTime"></label></div>
+        <div>Deaths: <span id="deaths"></span></div>
+        <div>Game: <span id="gamesPlayed"></span></div>
+        <div>Time: <span id="survivedTime"></span></div>
     </div>
 
     <script src="script.js"></script>
