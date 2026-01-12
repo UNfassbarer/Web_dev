@@ -172,6 +172,7 @@ function OpenMenu() {
     EditStyle(Menu, { top: "15px", left: "15px" });
     menuStart = true;
     Menu.classList.toggle("centeredObject");
+    SoundIcon.srcset = "img/mute_Icon_off_night.png";
   }
 }
 
@@ -224,11 +225,18 @@ const ToggleGameStats = (element) => {
   ToggleInnerSettings(element.id);
 };
 
-
+const SoundIcon = document.getElementById("mute_Symbol");
 const ToggleGameSounds = (element) => {
   // Actually switch
-  // ---
-  // ---
+  if (menuStart) {
+    SoundIcon.srcset === "img/mute_Icon_off_night.png" ?
+      SoundIcon.srcset = "img/mute_Icon_on_night.png" :
+      SoundIcon.srcset = "img/mute_Icon_off_night.png";
+  } else {
+    SoundIcon.srcset === "img/mute_Icon_off_day.png" ?
+      SoundIcon.srcset = "img/mute_Icon_on_day.png" :
+      SoundIcon.srcset = "img/mute_Icon_off_day.png";
+  }
   ToggleInnerSettings(element.id);
 };
 
