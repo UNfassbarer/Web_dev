@@ -343,14 +343,10 @@ body {
   position: absolute;
   /* height: 90dvh;
   width: 90dvw; */
-  height: 700px;
-  width: 1200px;
   image-rendering: pixelated;
   outline: rgb(255, 4, 226) 2px solid;
   z-index: 0;
   display: block;
-  width: 800px;
-  height: 450px;
   zoom: 1;
 }
 
@@ -366,7 +362,6 @@ body {
   -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
-  animation: gradientFlow 8s ease infinite;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) rotate(12.5deg);

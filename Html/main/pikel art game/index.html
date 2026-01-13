@@ -8,11 +8,13 @@
     <link rel="stylesheet" href="symbols.css">
     <link rel="stylesheet" href="animations.css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300" rel="stylesheet">
+    <link rel="icon" href="favicon.ico">
 </head>
 
 <body>
 
-<img id="mute_Symbol" src="img/mute_Icon_on_day.png" alt="mute icon" onclick="ToggleGameSounds(document.getElementById('Toggle_GameSounds'))">
+    <img id="mute_Symbol" src="img/mute_Icon_on_day.png" alt="mute icon"
+        onclick="ToggleGameSounds(document.getElementById('Toggle_GameSounds'))">
 
     <div id="Menu_Container" class="centerContent centeredObject">
 
@@ -61,7 +63,7 @@
 
     <canvas id="gameContainer" class="hiddenContent gameBox centeredObject"></canvas>
 
-    <h1 id="gameOver" class="GameOverBoard hiddenContent ToggleAnimationState">GameOver</h1>
+    <h1 id="gameOver" class="GameOverBoard hiddenContent">GameOver</h1>
 
     <div id="gameInfo" class="GameInfoFade hiddenContent">
         <div>Deaths: <span id="deaths"></span></div>

@@ -11,12 +11,11 @@ const ctx = canvas.getContext("2d");
 // Sync canvas internal resolution & make it adoptive to CSS size
 
 function resizeCanvas() {
-    canvas.width = 1200;
-    canvas.height = 700;
+    const width = window.innerWidth * 0.9;
+    const height = window.innerHeight * 0.9;
+    canvas.width = width;
+    canvas.height = height;
 }
-
-// window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
 
 // Load new game and reset background and old values
 let imgCounter = 0;
@@ -25,7 +24,7 @@ let GameOver = true;
 let DeathCounter = 0;
 let PausedGame = false;
 
-const playerImage = new Image();
+let playerImage = new Image();
 const structureImage = new Image();
 const spikeImage = new Image();
 const icelandImage = new Image();
@@ -42,19 +41,32 @@ const images = [
     portalImage,
     orbImage,
 ];
-const sources = [
-    "img/player.png",
+const IMGsources = [
+    "img/player_capibara_astronaut.png",
     "img/structureIMG.png",
     "img/spike.png",
     "img/R_spike.png",
     "img/iceland.png",
     "img/portal.png",
-    "img/orb.png",
+    "img/orb.png"
 ];
 images.forEach((img, i) => {
     img.onload = () => imgCounter++;
-    img.src = sources[i];
+    img.src = IMGsources[i];
 });
+
+const PlayerIMGsources = [
+    "img/player_capibara_astronaut.png",
+    "img/player_capibara_astronaut_run1.png",
+    "img/player_capibara_astronaut_run2.png"
+];
+const playerImages = [];
+PlayerIMGsources.forEach(src => {
+    const img = new Image();
+    img.src = src;
+    playerImages.push(img);
+});
+
 
 // Manage game time display
 let survivedTime = 0;
@@ -72,11 +84,10 @@ function SetTimingInterval(previousTime) {
 function newGame() {
     if (GameOver) {
         GameOver = false;
-        GameOverDiv.classList.add("hiddenContent");
         // document.getElementById("gameInfo").classList.remove("hiddenContent");
 
         SetTimingInterval(0);
-
+        !GameOverDiv.classList.contains("hiddenContent") ? toggleGameOverDiv() : null;
         GamesPlayed++;
         updateGameStats("#gamesPlayed", GamesPlayed);
 
@@ -92,9 +103,7 @@ function newGame() {
 const player = {
     x: 50, // position X
     y: canvas.height - 12, // position Y
-    // width: 64,        // size
-    // height: 128,       // size
-    width: 48, // size
+    width: 64, // size
     height: 96, // size
     dx: 0, // horizontal velocity "deltaX"
     dy: 0, // vertical velocity "deltaY"
@@ -103,6 +112,9 @@ const player = {
     gravity: 0.5, // gravity force
     onGround: true,
 };
+
+// window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
 class ObjectPool {
     constructor(createFunc, initialSize = 10) {
@@ -152,28 +164,17 @@ let keysPrev = {};
 document.addEventListener("keydown", (e) => (keys[e.code] = true));
 document.addEventListener("keyup", (e) => (keys[e.code] = false));
 
-// Frame rate limiting (60 FPS)
-let lastFrameTime = 0;
-const frameDelay = 1000 / 60; // ~16.67ms per frame
-
-function gameLoop(currentTime) {
+function gameLoop() {
     // Pause functionality
     if (
         keys[AssignmentKeys.PauseGame[0]] &&
         !keysPrev[AssignmentKeys.PauseGame[0]]
-    ) {
-        if (PausedGame) StartAnimation(3, TogglePausedGame);
-        else TogglePausedGame();
-    }
+    ) PausedGame ? StartAnimation(3, TogglePausedGame) : TogglePausedGame();
+
     keysPrev = { ...keys };
     if (!PausedGame) {
-        const elapsed = currentTime - lastFrameTime;
-        // Only update if enough time has passed
-        if (elapsed >= frameDelay) {
-            lastFrameTime = currentTime - (elapsed % frameDelay);
-            updateLogic();
-            renderLogic();
-        }
+        updateLogic();
+        renderLogic();
     }
     if (!GameOver) requestAnimationFrame(gameLoop);
 }
@@ -208,10 +209,10 @@ function renderLogic() {
     ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
 }
 
-const widthSpike = player.width * (2 / 3); //8
-const heightSpike = player.width * (2 / 3); //8
-const widthOrb = 24;
-const heightOrb = 24;
+const widthSpike = player.width * (2 / 3);
+const heightSpike = player.width * (2 / 3);
+const widthOrb = player.width / 2;
+const heightOrb = player.width / 2;
 const objectSpeed = 3;
 
 const groundSpike = () => {
@@ -266,8 +267,7 @@ const flyingIsland = () => {
     const x = canvas.width;
     const height = getRandomInt(player.height / 4, player.height / 2);
     const widthIceland = getRandomInt(player.height * 1.5, player.height * 3);
-    const y =
-        canvas.height - getRandomInt(player.height * 2, player.height * 3) - height;
+    const y = canvas.height - getRandomInt(player.height * 2, player.height * 3) - height;
 
     const fi_P = icelandPool.get();
     fi_P.x = x;
@@ -315,8 +315,8 @@ const flyingIsland = () => {
 };
 
 const groundPortals = (index) => {
-    const height = 96;
-    const width = 96;
+    const height = player.height;
+    const width = player.height;
     const x = canvas.width + index * getRandomInt(125, 200);
     const y = canvas.height - height;
     const p_P = portalPool.get();
@@ -420,15 +420,32 @@ function applyBooster(id) {
     }
 }
 
+// In UpdatePlayerImg, use preloaded images instead of changing src
+let playerImgState = 0;
+function UpdatePlayerImg() {
+    playerImage = playerImages[playerImgState];
+    playerImgState++;
+    if (playerImgState >= playerImages.length) playerImgState = 0;
+}
+
+let playerImgDelay = 0; // frames between image changes
 function updatePlayer() {
+
     // Horizontal player movement
     if (keys[AssignmentKeys.GoRight[0]] || keys[AssignmentKeys.GoRight[1]]) {
         player.dx = player.speed; // Right arrow OR D
+
+        playerImgDelay++;
+        if (playerImgDelay >= 5) {
+            UpdatePlayerImg();
+            playerImgDelay = 0;
+        }
+        // Animate player image when moving
+
     } else if (keys[AssignmentKeys.GoLeft[0]] || keys[AssignmentKeys.GoLeft[1]]) {
         player.dx = -player.speed; // Left arrow OR A
-    } else {
-        player.dx = 0; //Unless player will keep speed
-    }
+    } else player.dx = 0; //Unless player will keep speed
+
     if (
         (keys[AssignmentKeys.Jump[0]] || keys[AssignmentKeys.Jump[1]]) &&
         player.onGround
@@ -487,11 +504,6 @@ function updateObjects(object) {
             else if (object === orbs) orbPool.release(o);
             continue;
         }
-
-        // Squared distance
-        // const dx = o.x - player.x;
-        // const dy = o.y - player.y;
-
         if (
             player.x < o.x + o.width &&
             player.x + player.width > o.x &&
@@ -587,7 +599,6 @@ function checkPlayerCollision(object, o, i) {
         player.dy = 0;
         player.onGround = true;
     }
-
     if (
         !playerProtection &&
         (object === spikes || object === R_spikes) &&
@@ -596,18 +607,23 @@ function checkPlayerCollision(object, o, i) {
         player.y < o.y + o.height &&
         player.y + player.height > o.y
     )
-        resetGame();
+        // resetGame();
+        console.log("Total Death");
 }
 
 const GameOverDiv = document.getElementById("gameOver");
+
+function toggleGameOverDiv() {
+    GameOverDiv.classList.toggle("hiddenContent");
+    GameOverDiv.classList.toggle("ToggleAnimationState");
+}
 
 function resetGame() {
     DeathCounter++;
     updateGameStats("#deaths", DeathCounter);
     GameOver = true;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    GameOverDiv.classList.toggle("hiddenContent");
-    GameOverDiv.classList.toggle("gameInfo");
+    toggleGameOverDiv();
 
     // Return all objects to their pools
     obstacles.forEach((o) => obstaclePool.release(o));
