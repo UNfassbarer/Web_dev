@@ -55,16 +55,32 @@ images.forEach((img, i) => {
     img.src = IMGsources[i];
 });
 
-const PlayerIMGsources = [
+const PlayerGroundImgSources = [
     "img/player_capibara_astronaut.png",
-    "img/player_capibara_astronaut_run1.png",
-    "img/player_capibara_astronaut_run2.png"
+    "img/player_capibara_astronaut_run1.png"
 ];
-const playerImages = [];
-PlayerIMGsources.forEach(src => {
+const playerGroundImages = [];
+PlayerGroundImgSources.forEach(ImgLink => {
     const img = new Image();
-    img.src = src;
-    playerImages.push(img);
+    // img.onload = () => {
+    img.src = ImgLink;
+    playerGroundImages.push(img);
+    // }
+});
+
+const PlayerJumpImgSources = [
+    "img/player_capibara_astronaut_jump1.png",
+    "img/player_capibara_astronaut_jump2.png",
+    "img/player_capibara_astronaut_jump3.png",
+    "img/player_capibara_astronaut_jump4.png"
+];
+const playerJumpImages = [];
+PlayerJumpImgSources.forEach(ImgLink => {
+    const img = new Image();
+    // img.onload = () => {
+    img.src = ImgLink;
+    playerJumpImages.push(img);
+    // }
 });
 
 
@@ -113,7 +129,7 @@ const player = {
     onGround: true,
 };
 
-// window.addEventListener('resize', resizeCanvas);
+window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 class ObjectPool {
@@ -177,6 +193,7 @@ function gameLoop() {
         renderLogic();
     }
     if (!GameOver) requestAnimationFrame(gameLoop);
+    // if (!GameOver) setTimeout(gameLoop, 50);
 }
 
 function TogglePausedGame() {
@@ -206,7 +223,7 @@ function renderLogic() {
     drawObjects(orbs, orbImage)
 
     // Draw player (no rounding needed - canvas handles it)
-    ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
+    if (playerImage instanceof HTMLImageElement) ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
 }
 
 const widthSpike = player.width * (2 / 3);
@@ -421,43 +438,67 @@ function applyBooster(id) {
 }
 
 // In UpdatePlayerImg, use preloaded images instead of changing src
+let currentAnim = null;
+function AnimatePlayerImg(ImgSources, Delay) {
+
+    // Reset state if different animation
+    if (currentAnim !== ImgSources) {
+        currentAnim = ImgSources;
+        playerImgState = 0;
+        playerImgDelay = 0;
+    }
+
+    // Call image animation based on delay
+    playerImgDelay++;
+    if (playerImgDelay >= Delay) {
+        UpdatePlayerImg(ImgSources);
+        playerImgDelay = 0;
+    }
+}
+
+// Update player image based on state
 let playerImgState = 0;
-function UpdatePlayerImg() {
-    playerImage = playerImages[playerImgState];
-    playerImgState++;
-    if (playerImgState >= playerImages.length) playerImgState = 0;
+function UpdatePlayerImg(ImgSources) {
+    playerImgState = (playerImgState + 1) % ImgSources.length; //Reset to 0 if over length
+    playerImage = ImgSources[playerImgState];
 }
 
 let playerImgDelay = 0; // frames between image changes
 function updatePlayer() {
 
     // Horizontal player movement
-    if (keys[AssignmentKeys.GoRight[0]] || keys[AssignmentKeys.GoRight[1]]) {
-        player.dx = player.speed; // Right arrow OR D
-
-        playerImgDelay++;
-        if (playerImgDelay >= 5) {
-            UpdatePlayerImg();
-            playerImgDelay = 0;
+    if (keys[AssignmentKeys.GoRight[0]] || keys[AssignmentKeys.GoRight[1]]) {// Right arrow OR D
+        player.dx = player.speed;
+        if (player.onGround) {
+            AnimatePlayerImg(playerGroundImages, 10);
         }
-        // Animate player image when moving
 
-    } else if (keys[AssignmentKeys.GoLeft[0]] || keys[AssignmentKeys.GoLeft[1]]) {
-        player.dx = -player.speed; // Left arrow OR A
-    } else player.dx = 0; //Unless player will keep speed
+    } else if (keys[AssignmentKeys.GoLeft[0]] || keys[AssignmentKeys.GoLeft[1]]) {// Left arrow OR A
+        player.dx = -player.speed;
+        if (player.onGround) {
+            AnimatePlayerImg(playerGroundImages, 5);
+        }
+    } else {
+        player.dx = 0; //Unless player will keep speed
+        if (player.onGround) {
+            playerImage = playerGroundImages[0];
+            playerImgDelay = 0;
+            playerImgState = 0;
+        } //Idle image when no input
+    };
 
-    if (
-        (keys[AssignmentKeys.Jump[0]] || keys[AssignmentKeys.Jump[1]]) &&
-        player.onGround
-    ) {
+    if ((keys[AssignmentKeys.Jump[0]] || keys[AssignmentKeys.Jump[1]]) && player.onGround)// Up arrow or space
+    {
         JumpAnimation(player.x, player.y);
-        player.dy = player.jumpPower; // Up arrow or space
+        player.dy = player.jumpPower;
         player.onGround = false;
     }
-    // Gravity player
+    if (!player.onGround) {
+        AnimatePlayerImg(playerJumpImages, 6);
+    }
+
     player.dy += player.gravity;
 
-    // position update player
     player.x += player.dx;
     player.y += player.dy;
 
