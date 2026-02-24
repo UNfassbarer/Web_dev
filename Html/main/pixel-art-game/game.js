@@ -8,13 +8,18 @@ function updateGameStats(Category, Value) {
 const canvas = document.getElementById("gameContainer");
 const ctx = canvas.getContext("2d");
 
-// Sync canvas internal resolution & make it adoptive to CSS size
+// Get CSS canvas for sizing background
+const HtmlVideos = document.querySelectorAll(".gameVideo");
+let Video = undefined;
 
+// Sync canvas internal resolution & make it adoptive to CSS size
 function resizeCanvas() {
-    const width = window.innerWidth * 0.9;
-    const height = window.innerHeight * 0.9;
+    const height = Math.round(window.innerHeight * 0.8);
+    const width = Math.round(height * (3 / 2));
     canvas.width = width;
     canvas.height = height;
+    // for (const video of HtmlVideos)
+    //     video.style.height = height + "px";
 }
 
 // Load new game and reset background and old values
@@ -83,6 +88,16 @@ PlayerJumpImgSources.forEach(ImgLink => {
     // }
 });
 
+// const VideoSources = [
+//     "video/test60_a.mp4",
+//     "video/test60_b.mp4"
+//     // "video/test60_c.mp4"
+// ];
+
+const VideoSources = [];
+HtmlVideos.forEach(video => {
+    VideoSources.push(video.querySelector("source").getAttribute("src"));
+});
 
 // Manage game time display
 let survivedTime = 0;
@@ -93,7 +108,7 @@ function SetTimingInterval(previousTime) {
         if (GameOver) clearInterval(TimingInterval);
         let elapsedTime = Date.now() - startTime;
         survivedTime = (previousTime + elapsedTime / 1000).toFixed(2);
-        updateGameStats("#survivedTime", `${survivedTime}s`);
+        updateGameStats("#survivedTime >h5", `${survivedTime}s`);
     }, 100);
 }
 
@@ -105,15 +120,37 @@ function newGame() {
         SetTimingInterval(0);
         !GameOverDiv.classList.contains("hiddenContent") ? toggleGameOverDiv() : null;
         GamesPlayed++;
-        updateGameStats("#gamesPlayed", GamesPlayed);
+        updateGameStats("#gamesPlayed  >h5", GamesPlayed);
 
         createStars = false;
         canvas.classList.remove("hiddenContent");
+
+        startVideo();
+
         if (imgCounter === images.length) {
             requestAnimationFrame(gameLoop);
             spawnObject();
         }
     }
+}
+
+function startVideo() {
+
+    // Select random video
+    Video = HtmlVideos[getRandomInt(0, HtmlVideos.length - 1)];
+    Video.playbackRate = 0.125;
+    Video.currentTime = 0;
+
+    const playNext = () => {
+        Video.removeEventListener("canplaythrough", playNext);
+        Video.play();
+        Video.addEventListener("ended", startVideo, { once: true });
+    };
+
+    // Check if video is already ready
+    Video.readyState >= 3 ?
+        playNext()
+        : Video.addEventListener("canplaythrough", playNext);
 }
 
 const player = {
@@ -132,6 +169,7 @@ const player = {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
+// Ai improvement: Object pooling to reduce GC overhead and improve performance
 class ObjectPool {
     constructor(createFunc, initialSize = 10) {
         this.createFunc = createFunc;
@@ -211,8 +249,13 @@ let obstacles = [],
 const portalMap = new Map();
 
 function renderLogic() {
+    ctx.imageSmoothingEnabled = false;
+
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Render video background
+    ctx.drawImage(Video, 0, 0, canvas.width, canvas.height);
 
     // Move and draw obstacles
     drawObjects(obstacles, structureImage);
@@ -661,7 +704,7 @@ function toggleGameOverDiv() {
 
 function resetGame() {
     DeathCounter++;
-    updateGameStats("#deaths", DeathCounter);
+    updateGameStats("#deaths >h5", DeathCounter);
     GameOver = true;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     toggleGameOverDiv();

@@ -1,4 +1,9 @@
-/*sparkling menu button per click */
+@keyframes rotateLeft {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes particle {
   to {
     transform: translateY(-200px) scale(0) translateX(100px);
@@ -6,7 +11,8 @@
   }
 }
 
-@keyframes jumopParticle {
+/* Jump animation for player */
+@keyframes jumpParticle {
   0% {
     transform: translateY(0px);
   }
@@ -18,11 +24,10 @@
   }
 }
 
+/* Hilighted Elemment for key assignment */
 @keyframes Blink {
-  0% {}
-
   50% {
-    outline: rgba(255, 255, 255, 0) 10px dashed;
+    outline: rgba(255, 255, 255, 0) 5px solid;
   }
 
   100% {
@@ -51,19 +56,22 @@
 
 /*animated "M" for Menu */
 @keyframes Menu_loading_M {
-  0% {
-    transform: scale(0.9);
-    opacity: 0.75;
-  }
-
   50% {
-    transform: scale(1.1);
-    opacity: 1;
+    text-shadow:
+      -2px 0px 1px rgba(var(--pink), 0.5),
+      2px 0px 1px rgba(var(--turquoise), 0.9),
+      0px -2px 1px rgba(var(--pink), 0.5),
+      0px 2px 1px rgba(var(--turquoise), 0.9);
+    scale: 0.75;
   }
 
   100% {
-    transform: scale(0.9);
-    opacity: 0.75;
+    transform: rotate(360deg);
+    text-shadow:
+      -1px 0px 1px rgba(var(--turquoise), 0.5),
+      1px 0px 1px rgba(var(--pink), 0.9),
+      0px -1px 1px rgba(var(--turquoise), 0.5),
+      0px 1px 1px rgba(var(--pink), 0.9);
   }
 }
 
@@ -77,7 +85,7 @@
 /* Menu box border animation */
 @keyframes moveGradient {
   50% {
-    background-position: 100% 50%;
+    background-position: 100%;
   }
 }
 
@@ -99,14 +107,6 @@
   }
 
 }
-
-/*Universal shrink animation */
-/* @keyframes shrink {
-  to {
-    transform: scale(0);
-    opacity: 0;
-  }
-} */
 
 /*Universal resize animation */
 @keyframes resize {
@@ -167,6 +167,50 @@
   }
 }
 
-.ToggleAnimationState {
-  animation: gradientFlow 8s ease infinite !important;
+@keyframes RotateNumbers {
+  0% {
+    transform: translateY(-500px) rotateY(180deg);
+  }
+
+  100% {
+    transform: translateY(500px) rotateY(-180deg);
+  }
+}
+
+/* Start game button */
+@keyframes TooltipClick {
+  25% {
+    transform: scale(0.75);
+  }
+
+  50% {
+    box-shadow:
+      -2px -1px 15px 0px rgb(var(--pink)),
+      1px 1px 25px 0px rgba(var(--white)),
+      1px 1px 25px 0px rgba(var(--white)),
+      -1px -2px 15px 0px rgb(var(--pink));
+  }
+
+  75% {
+    transform: scale(1.25);
+  }
+}
+
+@keyframes TooltipClick_Span {
+  50% {
+    color: rgb(var(--white));
+    text-shadow:
+      1px 1px 0px rgb(var(--pink)),
+      2px 2px 0px rgb(var(--white));
+  }
+}
+
+@keyframes TooltipClick_Aftere {
+  25% {
+    top: -100%;
+  }
+
+  50% {
+    top: -130%;
+  }
 }
